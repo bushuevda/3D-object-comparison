@@ -1,0 +1,5 @@
+uvicorn main:app --host 127.0.0.1 --port 8000
+
+нужно создать дирректории 
+1) "directories"
+2) "directories_diff_images"

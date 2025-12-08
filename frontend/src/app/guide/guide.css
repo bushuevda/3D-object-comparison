@@ -1,0 +1,53 @@
+:host ::ng-deep p-listbox div{
+    height: 100% !important;
+}
+:host ::ng-deep p-listbox {
+    border: 1px solid #676262;
+}
+
+:host ::ng-deep .p-datatable-selectable-row  td {
+    border: 1px solid #000000;
+    border-left: white;
+    border-right: white;
+}
+
+.flex-row{
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-column{
+    display: flex;
+    flex-direction: column;
+}
+
+.fluid-w{
+    width: 100%;
+}
+
+
+.fluid-h{
+    height: 100%;
+}
+
+
+:host ::ng-deep p-table > div{
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between; 
+    height: 100%;
+}
+
+p-table{
+    height:100%;
+}
+
+:host ::ng-deep p-listbox{
+    width: 100%;
+    box-shadow: 1.5px 1.5px 1.5px rgb(119, 119, 119);
+}
+
+:host ::ng-deep p-listbox > div{
+    border: none;
+    padding-top: 0.5rem;
+}

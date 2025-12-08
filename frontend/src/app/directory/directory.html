@@ -1,0 +1,42 @@
+<p-toast />
+<div style="height: 100%; width: 100%;">
+    <div style="height: 50%; overflow: hidden;">
+        <div style="overflow-y: auto; max-height: 100%;">
+            <p-tree [value]="treeDirectories" class="w-full md:w-[30rem]" selectionMode="single" 
+            [(selection)]="selectedDirectory" (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)" 
+            [filter]="true" filterPlaceholder="Введите каталог"
+            emptyMessage="Список пуст"/>
+        </div>
+    </div>
+
+
+    <div style="display: flex; flex-direction: row; width: 100%; gap: 2rem; padding-left: 1rem; padding-right: 1rem;">
+        <div style="width: 50%; display: flex; flex-direction: column; gap: 1rem;">
+            <h2>Добавить каталог</h2>
+            <div style="display:flex; flex-direction: column; gap: 1rem;">
+                <p-floatlabel variant="on" fluid="true" style="width: 100%; ">
+                    <input id="username" type="text" [ngModel]="pathToDirectory" pInputText style="width:100%;" disabled="true" placeholder=""/>
+                    <label for="username">Путь к каталогу</label>
+                </p-floatlabel>
+                <p-floatlabel variant="on" fluid="true" style="width: 100%; ">
+                    <input id="username" type="text" [(ngModel)]="nameNewDirectory" pInputText style="width:100%;" [ngClass]="{ 'p-filled': nameNewDirectory }"/>
+                    <label for="username">Имя нового каталога</label>
+                </p-floatlabel>
+                <p-button label="Добавить" (click)="onClickAdd($event)"></p-button>
+            </div>
+        </div>
+
+        <div style="width: 50%; display: flex; flex-direction: column; gap: 1rem;">
+            <h2>Изменить каталог</h2>
+            <div style="display:flex; flex-direction: column; gap: 1rem;">
+                <p-floatlabel variant="on" fluid="true" style="width: 100%; ">
+                    <input id="username" type="text" [(ngModel)]="nameChangeDirectory" pInputText style="width:100%;" [ngClass]="{ 'p-filled': nameChangeDirectory }"/>
+                    <label for="username">Новое имя для каталога</label>
+                </p-floatlabel>
+                <p-button label="Изменить" (click)="onClickChange($event)"></p-button>
+            </div>
+        </div>
+
+    </div>
+
+</div>

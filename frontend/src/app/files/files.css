@@ -1,0 +1,16 @@
+:host ::ng-deep .p-fileupload-choose-button{
+width: 100%;
+}
+
+:host ::ng-deep .p-fileupload-choose-button[disabled]{
+    background-color:rgba(31, 108, 19, 0.27);
+    border-color: rgba(31, 108, 19, 0.27);
+}
+
+:host ::ng-deep p-button:has(.p-fileupload-choose-button){
+    width: 100%;
+}
+
+.file-badge{
+    width: 150px;
+}

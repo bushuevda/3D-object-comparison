@@ -1,0 +1,26 @@
+<div style="width: 100%; height: 100%;" class="outer">
+    <form #form="ngForm" class="p-row-6 inner">
+
+        <p-floatlabel variant="on">
+            <input  pInputText id="on_label"
+                type="email" name="email" 
+                pInputText [(ngModel)]="user.email"  
+                #email="ngModel" autocomplete="off" 
+                class="ng-dirty "  />
+            <label for="on_label">Email</label>
+        </p-floatlabel>
+
+
+        <p-floatlabel variant="on">
+            <input pInputText id="on_label"
+                type="password" name="password" 
+                pInputText [(ngModel)]="user.password"  
+                #password="ngModel" autocomplete="off" required />
+            <label for="on_label">Пароль</label>
+        </p-floatlabel>
+
+        <p-button label="Войти" (click)="onSubmit()" />
+
+        <p *ngIf="!sucess" style="color: red; text-align: center;">Неправильный логин или пароль!</p>
+    </form>
+</div>

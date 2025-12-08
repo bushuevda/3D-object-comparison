@@ -1,0 +1,27 @@
+<div style="height: 100%; display: flex; flex-direction: column; overflow: auto;">
+    <div style="height: 100%; width: 100%; display: flex; flex-direction: column; overflow: auto;">
+   
+
+        <p-toolbar>
+            <ng-template #start>
+            </ng-template>
+
+            <ng-template #center>
+                <p-button routerLink="guide" icon="pi pi-database" class="mr-2" text severity="secondary" label="Справочные данные"/>
+                <p-button routerLink="perceptron" icon="pi pi-chart-bar" class="mr-2" text severity="secondary" label="Обучение модели НС"/>
+                <p-button routerLink="directory" icon="pi pi-folder" class="mr-2" text severity="secondary" label="Каталоги"/>
+                <p-button routerLink="files" icon="pi pi-file-import" class="mr-2" text severity="secondary" label="Загрузка файлов"/>
+                <p-button routerLink="analytical" icon="pi pi-box" class="mr-2" text severity="secondary" label="Сравнение характеристик ГО"/>
+            </ng-template>
+
+            <ng-template #end>
+                <p-button routerLink="" icon="pi pi-sign-out" class="mr-2" text severity="secondary" label="Выйти"/>
+            </ng-template>
+
+        </p-toolbar>
+
+        <div style="height: 100%; width: 100%; overflow: auto; ">
+            <router-outlet ></router-outlet> 
+        </div>
+    </div>
+</div>

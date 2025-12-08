@@ -1,0 +1,93 @@
+
+<p-toast/>
+<div class="flex-row fluid-w" style="height: 100%; overflow: auto;">
+    <!--Левая панель-->
+    <div class="card flex" style="display: flex; width: 200px; " >
+        <div style="width: 200px; display: flex;">
+                <p-listbox [options]="tableInfo" 
+                (onChange)="onChange($event)" optionLabel="name"/>
+        </div>
+    </div>
+
+    <div class="flex-column fluid-w" style="height: 100%; padding: 1rem;">
+        <!--Форма-->
+        <div style="display: flex; flex-direction: row; gap: 0.5rem; width: 100%; ">
+            <div style="display: flex; flex-direction: column; gap: 1rem; width: 100%; min-width: 70%; ">
+                <div style="display: flex; width: 100%; gap: 1rem">
+                    <p-floatlabel variant="on" fluid="true" style="width: 70%; height: 100%;">
+                        <input pInputText  id="name" type="text" fluid="true" [(ngModel)]="name" [ngClass]="{ 'p-filled': name }"/>
+                        <label for="name">Название</label>
+                    </p-floatlabel>
+                    <p-button label="Добавить" fluid="true" (click)="insertRowTable($event)" [ngStyle]="{'width': '30%'}" ></p-button>
+                </div>
+ 
+
+                <div style="display: flex; width: 100%; gap: 1rem">
+                    <p-floatlabel variant="on" fluid="true" style="width: 70%; height: 100%;">
+                        <input pInputText  id="name" type="text" fluid="true" [(ngModel)]="short_name" [ngClass]="{ 'p-filled': short_name }"/>
+                        <label for="short_name">Краткое название</label>
+                    </p-floatlabel>
+                    <p-button label="Изменить" fluid="true" (click)="updateRowTable($event)" [ngStyle]="{'width': '30%'}" ></p-button>
+                </div>
+
+
+
+
+            </div>
+          
+        </div>
+
+        <!--Таблица-->
+        <div class="flex-column fluid-w" style="height: 100%; overflow: auto; display: flex; flex-direction: column; justify-content: space-between;">
+            <p-table #ptableRoute
+                    [columns]="columnsTable"
+                    [value]="selectedTable" 
+                    selectionMode="single"
+                    [rows]="10"
+                    scrollHeight="flex"
+                    [scrollable]="true"
+                    columnResizeMode="expand"
+                    >
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" [style.width]="'25%'">{{ col.header }}</th>
+                    </tr>
+                    <tr>
+                        <th *ngFor="let col of columns; let i = index">
+                            <p-columnFilter [field]="col.field" matchMode="in" [showMenu]="false" >
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-multiselect 
+                                    fluid="true"
+                                    [ngModel]="value" 
+                                    [options]="getOptions(col.field)" 
+                                    [placeholder]="col.header" 
+                                    (onChange)="filter($event.value)" 
+                                    [optionValue]="'name'" 
+                                    [optionLabel]="'name'" 
+                                    emptyMessage="Список пуст"
+                                    style="min-width: 14rem" 
+                                    [panelStyle]="{ minWidth: '16rem' }">
+                                        <ng-template let-option pTemplate="item">
+                                            <div class="flex items-center gap-2">
+                                                <span>{{ option.name }}</span>
+                                            </div>
+                                        </ng-template>
+                                    </p-multiselect>
+                                </ng-template>
+                            </p-columnFilter>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                    <tr [pSelectableRow]="rowData" (click)="onSelectRow(rowData)">
+                        <td *ngFor="let col of columns">{{ rowData[col.field] }}</td>
+                    </tr>
+                </ng-template>
+
+            </p-table>
+        </div>
+        
+    <div>
+
+
+</div>

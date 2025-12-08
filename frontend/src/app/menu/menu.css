@@ -1,0 +1,17 @@
+
+.card {
+  border-radius: 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+:host ::ng-deep{
+  padding: 0;
+  margin-top: 0;
+  height: 100%;
+}    
+
+:host ::ng-deep p-toolbar{
+  border-bottom: 2px solid black;
+  box-shadow: 1.5px 1.5px 1.5px rgb(119, 119, 119);
+}

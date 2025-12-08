@@ -1,0 +1,372 @@
+<p-toast/>
+<p-menubar [model]="items" />
+
+<div style="overflow: hidden; display: flex; flex-direction: column;  padding: 1rem; width: 100%;  height: 90%">
+
+<!--Сформировать отчет-->
+<p-stepper *ngIf="stateShowFormedReport" [(value)]="stepNum"  (valueChange)="getTreeDirectories()" [linear]="true">
+    <p-step-list>
+        <p-step [value]="1">Выбор требуемого ГО</p-step>
+        <p-step [value]="2">Выбор смоделированного ГО</p-step>
+        <p-step [value]="3">Отчет сравнения</p-step>
+    </p-step-list>
+    <p-step-panels style="display: flex;  flex-direction: column;">
+        <p-step-panel [value]="1">
+            <ng-template #content let-activateCallback="activateCallback">
+                <div class="flex flex-col h-48" style="width: 100%;  height: 100%; ">
+                    <div style="display: flex; flex-direction: row; height: 100%; gap: 1rem">
+
+                        <div style="width: 50%;  height: 65vh;  overflow: hidden;">
+                            <div style="overflow-y: auto; max-height: 100%;">
+                                <p-tree  [value]="treeDirectories" class="w-full md:w-[30rem]" selectionMode="single" 
+                                [(selection)]="selectedDirectory1" (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)" 
+                                [filter]="true" filterPlaceholder="Выберите объект"
+                                emptyMessage="Список пуст"/>
+                            </div>
+                        </div>
+
+                        <div style="  border: 1px solid black; width: 50%;max-height: 30%"  >
+                            
+                            <app-engine style="width: 50%;"></app-engine>
+                           
+                        </div>
+
+                        
+                    </div>
+                    <div style="display: flex; padding-top: 0.5rem;">
+                        <p-button label="Далее" icon="pi pi-arrow-right" iconPos="right" [disabled]="!rulesUpload1.all" (onClick)="activateCallback(2)" />
+                    </div>
+                </div>
+            </ng-template>
+        </p-step-panel>
+
+        <p-step-panel [value]="2">
+            <ng-template #content let-activateCallback="activateCallback">
+                <div class="flex flex-col h-48" style="width: 100%;">
+                    <div style="display: flex; flex-direction: row; height: 100%; gap: 1rem">
+
+                        <div style="width: 50%;  height: 65vh;  overflow: hidden;">
+                            <div style="overflow-y: auto; max-height: 100%;">
+                                <p-tree [value]="treeDirectories" class="w-full md:w-[30rem]" selectionMode="single" 
+                                [(selection)]="selectedDirectory2" (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)" 
+                                [filter]="true" filterPlaceholder="Выберите объект"
+                                emptyMessage="Список пуст"/>
+                            </div>
+                        </div>
+
+
+                        <div style="  border: 1px solid black; width: 50%;"  >
+                            
+                            <app-engine style="width: 50%;"></app-engine>
+                            
+                        </div>
+                        <!--
+                        <div style="display: flex; height: 100%; padding-left: 1rem; flex-direction: column; gap: 1rem">
+                            <ng-container *ngTemplateOutlet="tableCompare;"></ng-container>
+                                <p-button label="Показать старый отчет"  iconPos="right" (onClick)="activateCallback(2)" />
+                        </div>
+                         -->
+                        
+                    </div>
+                    <div style="display: flex; padding-top: 0.5rem; gap: 1rem">
+                        <p-button label="Назад" icon="pi pi-arrow-left" iconPos="left" (onClick)="activateCallback(1)" />
+                        <p-button label="Далее" icon="pi pi-arrow-right" iconPos="right" [disabled]="!rulesUpload2.all" (onClick)="activateCallback(3)" />
+                    </div>
+                </div>
+            </ng-template>
+        </p-step-panel>
+
+        <p-step-panel [value]="3" >
+            <ng-template #content let-activateCallback="activateCallback">
+                <!--Выбор модели НС-->
+                <div *ngIf="stateShowModelNN" style="width: 100%;  height: 65vh;  overflow: hidden;">
+                    <div style="overflow-y: auto; max-height: 100%; width: 100%;">
+                        <!--
+                        <p-tree [value]="treeDirectories" class="w-full md:w-[30rem]" selectionMode="single" 
+                        [(selection)]="selectedDirectory2" (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)" 
+                        [filter]="true" filterPlaceholder="Выберите объект"
+                        emptyMessage="Список пуст"/>
+                        -->
+
+                        <p-table                      
+                        [columns]="columnsTableNN"
+                        [value]="modelsPerceptron" 
+                        [(selection)]="selectedModelNN"
+                        selectionMode="single"
+                        [rows]="10"
+                        scrollHeight="flex"
+                        [scrollable]="true"
+                        columnResizeMode="expand">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th *ngFor="let col of columns" [style.width]="'25%'">{{ col.header }}</th>
+                                </tr>
+                            </ng-template>
+
+                            <ng-template pTemplate="body" let-rowData let-columns="columns">
+                                <tr [pSelectableRow]="rowData">
+                                    <td *ngFor="let col of columns">{{ rowData[col.field] }}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+
+                    </div>
+                </div>
+
+                <!--Отчет сравнения-->
+                <div *ngIf="stateShowReadyReport" style="display: flex; height: 100%;">
+                    <ng-container  *ngTemplateOutlet="orderCompare;"></ng-container>
+                </div>
+                <div *ngIf="!stateShowReadyReport && !stateShowModelNN" style="height: 80vh; width: 100%; display: flex; justify-content: center; align-items: center;">
+                        <p-progress-spinner strokeWidth="4" strokeColor="black" animationDuration="1.5s" [style]="{ width: '50px', height: '50px', 'stroke' : 'black' }" />
+                </div>
+                <div style="display: flex; padding-top: 0.5rem; gap: 1rem">
+                    <p-button *ngIf="!stateShowReadyReport && stateShowModelNN" label="Назад" icon="pi pi-arrow-left" iconPos="left" (onClick)="activateCallback(2)" />
+                    <p-button *ngIf="stateShowReadyReport" label="Сформировать новый отчет" (onClick)="stepNewReport($event, activateCallback, 1)" />
+                    <p-button *ngIf="!stateShowReadyReport && stateShowModelNN" label="Сформировать отчет" (onClick)="compareObjects($event)" />
+                </div>
+            </ng-template>
+        </p-step-panel>
+    </p-step-panels>
+</p-stepper>
+
+
+    <!--Просмотреть отчет-->
+    <div *ngIf="stateShowReport" style="height: 90%;">
+        <p-table                     
+            [columns]="columnsViewResultReport"
+            [value]="viewsReport" 
+            selectionMode="single"
+            [rows]="10"
+            scrollHeight="flex"
+            [scrollable]="true"
+            [(selection)]="selectedResult"
+            columnResizeMode="expand">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" [style.width]="'25%'">{{ col.header }}</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                    <tr [pSelectableRow]="rowData">
+                        <td *ngFor="let col of columns">{{ rowData[col.field] }}</td>
+                    </tr>
+                </ng-template>
+        </p-table>
+        <p-button label="Показать"  (onClick)="getReport($event)" />
+    </div>
+
+    <div *ngIf="stateLoadingReportRead" style="height: 100%; width: 100%; display: flex; justify-content: center; align-items: center;">
+        <p-progress-spinner strokeWidth="4" strokeColor="black" animationDuration="1.5s" [style]="{ width: '50px', height: '50px', 'stroke' : 'black' }" />
+    </div>
+    <!--Отчет сравнения-->
+    <div *ngIf="stateShowReportRead" style="display: flex; height: 100%;">
+        <ng-container  *ngTemplateOutlet="orderCompare;"></ng-container>
+    </div>
+
+
+</div>
+
+
+<!--Шаблон для отчета сравнения-->
+<ng-template #orderCompare >
+    <div style="overflow: auto; display: flex; flex-direction: column;  width: 100%;">
+        <p-table [value]="[orderTable]" scrollHeight="flex" fluid="true">
+            <ng-template #header>
+                <!--Первая часть таблицы-->
+                <tr>
+                    <th colspan="3">Результат сравнения</th>
+                    <th colspan="5">Модель НС</th>
+                </tr>
+                <tr>
+                    <th>Номер</th>
+                    <th>Дата сравнения</th>
+                    <th>Тип объекта</th>
+
+                    <th>Номер</th>
+                    <th>Имя файла</th>
+                    <th>Дата создания</th>
+                    <th>Допустимое отличие</th>
+                    <th>Ед. изм.</th>
+                </tr>
+            
+            </ng-template>
+
+            <ng-template #body let-order>
+                <tr>
+                    <!--Результат сравнения-->
+                    <td>{{order.resultCompare.id}}</td>
+                    <td>{{order.resultCompare.date_compare}}</td>
+                    <td>{{order.resultCompare.type_object}}</td>
+
+                    <!--Модель нейронной сети-->
+                    <td>{{order.modelNeuralNetwork.id}}</td>
+                    <td> {{order.modelNeuralNetwork.name_file}}</td>
+                    <td>{{order.modelNeuralNetwork.date_create}} </td>
+                    <td> {{order.modelNeuralNetwork.resolve_diff}}</td>
+                    <td>{{order.modelNeuralNetwork.ed_izm}}</td>
+                </tr>
+
+
+                <!--Вторая часть таблицы-->
+                <!--Название таблиц-->
+                <tr>
+                    <th colspan="4">Сведения о файлах геометрических объектов</th>
+                    <th colspan="4">Значение отличий</th>
+                </tr>
+                <!--Заголовки таблиц-->
+                <tr>
+                    <!--Заголовки Таблица "Сведения о файлах геометрических объектов"-->
+                    <th >Номер</th>
+                    <th >Тип объекта</th>
+                    <th >Дата создания</th>
+                    <th >Имя файла</th>
+
+                    <!--Заголовки Таблица "Значение отличий"-->
+                    <th colspan="2">Название</th>
+                    <th >Значение</th>
+                    <th >Единица измерения</th>
+                </tr>
+                <!--Данные таблиц-->
+                <tr>
+                    <!--Данные Таблица "Сведения о файлах геометрических объектов" Требуемый объект-->
+                    <td>{{order.geometryObjectModeled.id}}</td>
+                    <td>{{order.geometryObjectModeled.type_object}}</td>
+                    <td>{{order.geometryObjectModeled.date_create}}</td>
+                    <td>{{order.geometryObjectModeled.name_file}}</td>
+
+                    <!--Данные Таблица "Значение отличий"-->
+                    <td colspan="2">Отличие кол-ва вершин</td>
+                    <td>{{order.compareValues.diff_count_vertex.value}}</td>
+                    <td>{{order.compareValues.diff_count_vertex.ed_izm}}</td>
+                </tr>
+
+                <tr>
+                    <!--Данные Таблица "Сведения о файлах геометрических объектов" Смоделированный объект-->
+                    <td>{{order.geometryObjectRequired.id}}</td>
+                    <td>{{order.geometryObjectRequired.type_object}}</td>
+                    <td>{{order.geometryObjectRequired.date_create}}</td>
+                    <td>{{order.geometryObjectRequired.name_file}}</td>
+
+                    <!--Данные Таблица "Значение отличий"-->
+                    <td colspan="2">Отличие кол-ва ребер</td>
+                    <td>{{order.compareValues.diff_count_edge.value}}</td>
+                    <td>{{order.compareValues.diff_count_edge.ed_izm}}</td>
+
+                </tr>
+
+
+
+                <tr>
+                    <th colspan="4">Сведения о файлах геометрических объектов </th>
+                    <td colspan="2">Отличие кол-ва граней</td>
+                    <td>{{order.compareValues.diff_count_face.value}}</td>
+                    <td>{{order.compareValues.diff_count_face.ed_izm}}</td>
+                </tr>
+
+
+                <tr>
+                    <th rowspan="3">Ракурс</th>
+                    <th colspan="3">Тип изображения</th>
+                    <td colspan="2">Отличие карт площадей граней</td>
+                    <td>{{order.compareValues.diff_map_faces.value}}</td>
+                    <td>{{order.compareValues.diff_map_faces.ed_izm}}</td>
+                </tr>
+
+                <tr>
+                    <th rowspan="2">Изображение-отличие</th>
+                    <th colspan="2">Фактическое изображение </th>
+                    <td colspan="2">Отличие карт длин ребер</td>
+                    <td>{{order.compareValues.diff_map_edge.value}}</td>
+                    <td>{{order.compareValues.diff_map_edge.ed_izm}}</td>
+                </tr>
+
+                <tr>
+                    <th>ТГО</th>
+                    <th>СГО</th>
+                    <td colspan="2">Отличие карт углов между ребрами</td>
+                    <td>{{order.compareValues.diff_map_angle.value}}</td>
+                    <td>{{order.compareValues.diff_map_angle.ed_izm}}</td>
+                </tr>
+
+
+
+                <tr>
+                    <td>Спереди</td>
+                    <td><p-image src="{{order.imagesFilesDiff.forward}}" width="50" [preview]="true"></p-image></td>
+                    <td><p-image src="{{order.imagesFilesRequired.forward}}" width="50" [preview]="true"></p-image></td>
+                    <td><p-image src="{{order.imagesFilesModeled.forward}}" width="50" [preview]="true"></p-image></td>
+                    <td colspan="2">Отличие вида спереди</td>
+                    <td>{{order.compareValues.diff_forward.value}}</td>
+                    <td>{{order.compareValues.diff_forward.ed_izm}}</td>
+                </tr>
+
+                <tr>
+                    <td>Сзади</td>
+                    <td><p-image src="{{order.imagesFilesDiff.back}}" width="50" [preview]="true"></p-image></td>
+                    <td><p-image src="{{order.imagesFilesRequired.back}}" width="50" [preview]="true"></p-image></td>
+                    <td><p-image src="{{order.imagesFilesModeled.back}}" width="50" [preview]="true"></p-image></td>
+                    <td colspan="2">Отличие вида сзади</td>
+                    <td>{{order.compareValues.diff_back.value}}</td>
+                    <td>{{order.compareValues.diff_back.ed_izm}}</td>
+                </tr>
+
+
+
+                <tr>
+                    <td>Слева</td>
+                    <td><p-image src="{{order.imagesFilesDiff.left}}" width="50" [preview]="true"></p-image></td>
+                    <td><p-image src="{{order.imagesFilesRequired.left}}" width="50" [preview]="true"></p-image></td>
+                    <td><p-image src="{{order.imagesFilesModeled.left}}" width="50" [preview]="true"></p-image></td>
+                    <td colspan="2">Отличие вида слева</td>
+                    <td>{{order.compareValues.diff_left.value}}</td>
+                    <td>{{order.compareValues.diff_left.ed_izm}}</td>
+                </tr>
+
+
+                <tr>
+                    <td>Справа</td>
+                    <td><p-image src="{{order.imagesFilesDiff.right}}" width="50" [preview]="true"></p-image></td>
+                    <td><p-image src="{{order.imagesFilesRequired.right}}" width="50" [preview]="true"></p-image></td>
+                    <td><p-image src="{{order.imagesFilesModeled.right}}" width="50" [preview]="true"></p-image></td>
+                    <td colspan="2">Отличие вида справа</td>
+                    <td>{{order.compareValues.diff_right.value}}</td>
+                    <td>{{order.compareValues.diff_right.ed_izm}}</td>
+                </tr>
+
+
+                <tr>
+                    <td>Снизу</td>
+                    <td><p-image src="{{order.imagesFilesDiff.bottom}}" width="50" [preview]="true"></p-image></td>
+                    <td><p-image src="{{order.imagesFilesRequired.bottom}}" width="50" [preview]="true"></p-image></td>
+                    <td><p-image src="{{order.imagesFilesModeled.bottom}}" width="50" [preview]="true"></p-image></td>
+                    <td colspan="2">Отличие вида снизу</td>
+                        <td>{{order.compareValues.diff_bottom.value}}</td>
+                        <td>{{order.compareValues.diff_bottom.ed_izm}}</td>
+                </tr>
+
+
+
+                <tr>
+                    <td>Сверху</td>
+                    <td><p-image src="{{order.imagesFilesDiff.top}}" width="50" [preview]="true"></p-image></td>
+                    <td><p-image src="{{order.imagesFilesRequired.top}}" width="50" [preview]="true"></p-image></td>
+                    <td><p-image src="{{order.imagesFilesModeled.top}}" width="50" [preview]="true"></p-image></td>
+                    <td colspan="2">Отличие вида сверху </td>
+                        <td>{{order.compareValues.diff_top.value}}</td>
+                        <td>{{order.compareValues.diff_top.ed_izm}}</td>
+                </tr>
+
+                <tr>
+                    <td colspan="4"></td>
+                    <td colspan="2">Фактическое отличие</td>
+                    <td>{{order.compareValues.diff_real.value}}</td>
+                    <td>{{order.compareValues.diff_real.ed_izm}}</td>
+                </tr>
+
+
+            </ng-template>
+        </p-table>
+    </div>
+</ng-template>

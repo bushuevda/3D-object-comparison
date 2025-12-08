@@ -1,0 +1,74 @@
+<p-toast/>
+<div style="display: flex; height: 100%; width: 100%;">
+    <div style="width: 100%; display: flex; flex-direction: column; gap: 1rem; padding: 1rem;">
+
+        <div style="height: 50%; overflow: hidden;">
+            <div style="overflow-y: auto; max-height: 100%;">
+                <p-tree [value]="treeDirectories" class="w-full md:w-[30rem]" selectionMode="single" 
+                [(selection)]="selectedDirectory" (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)" 
+                [filter]="true" filterPlaceholder="Введите каталог"
+                emptyMessage="Список пуст"/>
+            </div>
+        </div>
+
+
+        <p-floatlabel variant="on" fluid="true" style="width: 100%; ">
+            <input id="username" type="text" [ngModel]="pathToDirectory" pInputText style="width:100%;" disabled="true" placeholder=""/>
+            <label for="username">Путь к каталогу</label>
+        </p-floatlabel>
+
+        <p-floatlabel variant="on" fluid="true" style="width: 100%; ">
+            <input id="name_model" type="text" [(ngModel)]="nameModel" pInputText style="width:100%;" disabled="true" placeholder=""/>
+            <label for="name_model">Название модели</label>
+        </p-floatlabel>
+
+        <p-floatlabel variant="on" fluid="true" style="width: 100%; ">
+            <input id="count_epochs" type="number" (change)="onChangeCountEpochs($event)" (input)="changePositiveNumber($event)"
+            [(ngModel)]="countEpochs" pInputText style="width:100%;" [ngClass]="{ 'p-filled': countEpochs }"/>
+            <label for="count_epochs">Количество эпох</label>
+        </p-floatlabel>
+
+        <p-floatlabel variant="on" fluid="true" style="width: 100%; ">
+            <input id="err_resolve" type="number"  (change)="onChangeErrResolve($event)" (input)="changePositiveNumber($event)"
+            [(ngModel)]="errResolve" pInputText style="width:100%;" [ngClass]="{ 'p-filled': errResolve }"/>
+            <label for="err_resolve">Допустимая погрешность</label>
+        </p-floatlabel>
+
+
+        <p-floatlabel variant="on" fluid="true" style="width: 100%; ">
+            <input id="count_neuron" type="number" (change)="onChangeCountNeuron($event)" (input)="changePositiveNumber($event)"
+            [(ngModel)]="countNeuron" pInputText style="width:100%;" [ngClass]="{ 'p-filled': countNeuron }"/>
+            <label for="count_neuron">Кол-во нейроном в первом скрытом слое</label>
+        </p-floatlabel>
+
+
+        <p-floatlabel variant="on" fluid="true" style="width: 100%; ">
+            <input id="size_data" type="number" (change)="onChangeSizeData($event)" (input)="changePositiveNumber($event)"
+            [(ngModel)]="sizeData" pInputText style="width:100%;" [ngClass]="{ 'p-filled': sizeData }"/>
+            <label for="size_data">Размер выборки</label>
+        </p-floatlabel>
+
+        <p-floatlabel variant="on" fluid="true" style="width: 100%; ">
+            <p-select id="optimizer" [options]="optimizers" [(ngModel)]="optimizer"  [editable]="true" 
+            optionLabel="name" class="w-full md:w-56" style="width:100%; border: solid 1px black;"/>
+            <label for="optimizer">Оптимизатор</label>
+        </p-floatlabel>
+
+        <div style="display: flex; flex-direction: row; gap: 1rem;">
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <p-button label="Начать обучение" (click)="trainModel($event)" [disabled]="statePrepareTrain == EnumStateTrain.Begin"></p-button>
+            </div>
+            <div style="display: flex; width: 100%; justify-content: flex-start; align-items: flex-end;">
+                <p-image src="assets/nn.jpg" alt="Image" width="80" [preview]="true" ></p-image>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="statePrepareTrain == EnumStateTrain.Begin" style="height: 100%; width: 850px; display: flex; justify-content: center; align-items: center;">
+        <p-progress-spinner strokeWidth="4" strokeColor="black" animationDuration="1.5s" [style]="{ width: '50px', height: '50px', 'stroke' : 'black' }" />
+    </div>
+
+    <div *ngIf="statePrepareTrain == EnumStateTrain.End" style="height: 30%; width: 850px; padding: 1rem;">
+        <p-chart type="bar" [data]="data" [options]="options"  height="400"/>
+    </div>
+</div>

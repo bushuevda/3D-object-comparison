@@ -1,0 +1,9 @@
+:host th{
+    text-align: center;
+    border: 1px solid black;
+}
+
+:host td{
+    text-align: center;
+    border: 1px solid black;
+}

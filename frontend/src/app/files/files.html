@@ -1,0 +1,233 @@
+<p-toast/>
+<div style="display: flex; flex-direction: row; width: 100%; height: 100%; overflow: hidden">
+    <div style="width: 50%;">
+
+        <div style="height: 90%; overflow: hidden;">
+            <div style="overflow-y: auto; max-height: 100%;">
+                <p-tree [value]="treeDirectories" class="w-full md:w-[30rem]" selectionMode="single" 
+                [(selection)]="selectedDirectory" (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)" 
+                [filter]="true" filterPlaceholder="Введите каталог"
+                emptyMessage="Список пуст"/>
+            </div>
+        </div>
+
+
+        <div style="padding: 1rem; gap: 1rem; display: flex; flex-direction: column;">
+            <p-floatlabel variant="on" fluid="true" style="width: 100%; ">
+                <input id="username" pInputText style="width:100%;" [ngModel]="pathToDirectory" disabled="true" placeholder=""/>
+                <label for="username">Путь к каталогу</label>
+            </p-floatlabel>
+        </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; padding: 1rem; width: 100%; overflow: hidden;">
+        <div  style="display: flex; flex-direction: column; padding: 1rem;  width: 100%;  overflow-x:hidden ; overflow-y: auto;"> 
+            <p-floatlabel variant="on" fluid="true" style="width: 100%;">
+                <p-select id="typeObj" 
+                        style="width:100%;" 
+                        [options]="typesObject" 
+                        [(ngModel)]="selectedTypeObject" 
+                        optionLabel="name" 
+                        class="w-full md:w-56" />
+                <label for="typeObj">Тип объекта</label>
+
+            </p-floatlabel>
+
+            <!--Файл геометрического объекта (.obj)-->
+            <p-fileupload   [customUpload]="true"  
+                            (uploadHandler)="customUploadHandlerObj($event)"  
+                            #ref_file_obj
+                            chooseLabel="Файл геометрического объекта (.obj)" 
+                            chooseIcon="pi pi-upload" 
+                            accept=".obj*" 
+                            maxFileSize="10000000"
+                            uploadLabel="Загрузить"
+                            cancelLabel="Отмена"
+                            [disabled]="stateFileUpload.obj">
+                            
+                <ng-template #content let-files>
+                        <div *ngFor="let file of files; " class="p-8 rounded-border flex flex-col border border-surface items-center gap-4" style="display: flex; flex-direction: row; gap: 1rem;">
+
+                            <div style="display: flex; flex-direction: column;">
+                                <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name | truncateFilename: 10 }}</span>
+                                <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.size / 1024 }} KB</span>
+
+                            </div>
+
+                        </div>
+                </ng-template>
+            </p-fileupload> 
+
+
+            <!--Изображение вида сверху-->
+            <p-fileupload   [customUpload]="true"  
+                            (uploadHandler)="customUploadHandlerImg($event, perspectivesImage.up, typesImage.real)"  
+                            #ref_img_up
+                            chooseLabel="Изображение вида сверху" 
+                            chooseIcon="pi pi-upload" 
+                            accept="image/*" 
+                            maxFileSize="10000000"
+                            uploadLabel="Загрузить"
+                            cancelLabel="Отмена"
+                            [disabled]="stateFileUpload.up">
+                            
+                <ng-template #content let-files>
+                        <div *ngFor="let file of files; " class="p-8 rounded-border flex flex-col border border-surface items-center gap-4" style="display: flex; flex-direction: row; gap: 1rem;">
+                            <div>
+                                <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="60" />
+                            </div>
+                            <div style="display: flex; flex-direction: column;">
+                                <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name | truncateFilename: 10 }}</span>
+                                <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.size / 1024 }} KB</span>
+
+                            </div>
+
+                        </div>
+                </ng-template>
+            </p-fileupload> 
+
+            <!--Изображение вида снизу-->
+            <p-fileupload   [customUpload]="true"  
+                            (uploadHandler)="customUploadHandlerImg($event, perspectivesImage.down, typesImage.real)" 
+                            #ref_img_down 
+                            chooseLabel="Изображение вида снизу" 
+                            chooseIcon="pi pi-upload" 
+                            accept="image/*" 
+                            maxFileSize="10000000"
+                            uploadLabel="Загрузить"
+                            cancelLabel="Отмена"
+                            [disabled]="stateFileUpload.down">
+                            
+                <ng-template #content let-files>
+                        <div *ngFor="let file of files; " class="p-8 rounded-border flex flex-col border border-surface items-center gap-4" style="display: flex; flex-direction: row; gap: 1rem;">
+                            <div>
+                                <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="60" />
+                            </div>
+                            <div style="display: flex; flex-direction: column;">
+                                <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name | truncateFilename: 10 }}</span>
+                                <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.size / 1024 }} KB</span>
+
+                            </div>
+
+                        </div>
+                </ng-template>
+            </p-fileupload> 
+
+
+            <!--Изображение вида слева-->
+            <p-fileupload   [customUpload]="true"  
+                            (uploadHandler)="customUploadHandlerImg($event, perspectivesImage.left, typesImage.real)" 
+                            #ref_img_left
+                            chooseLabel="Изображение вида слева" 
+                            chooseIcon="pi pi-upload" 
+                            accept="image/*" 
+                            maxFileSize="10000000"
+                            uploadLabel="Загрузить"
+                            cancelLabel="Отмена"
+                            [disabled]="stateFileUpload.left">
+                            
+                <ng-template #content let-files>
+                        <div *ngFor="let file of files; " class="p-8 rounded-border flex flex-col border border-surface items-center gap-4" style="display: flex; flex-direction: row; gap: 1rem;">
+                            <div>
+                                <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="60" />
+                            </div>
+                            <div style="display: flex; flex-direction: column;">
+                                <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name | truncateFilename: 10 }}</span>
+                                <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.size / 1024 }} KB</span>
+
+                            </div>
+
+                        </div>
+                </ng-template>
+            </p-fileupload> 
+
+
+
+            <!--Изображение вида справа-->
+            <p-fileupload   [customUpload]="true"  
+                            (uploadHandler)="customUploadHandlerImg($event, perspectivesImage.right, typesImage.real)" 
+                            #ref_img_right
+                            chooseLabel="Изображение вида справа" 
+                            chooseIcon="pi pi-upload" 
+                            accept="image/*" 
+                            maxFileSize="10000000"
+                            uploadLabel="Загрузить"
+                            cancelLabel="Отмена"
+                            [disabled]="stateFileUpload.right">
+                            
+                <ng-template #content let-files>
+                        <div *ngFor="let file of files; " class="p-8 rounded-border flex flex-col border border-surface items-center gap-4" style="display: flex; flex-direction: row; gap: 1rem;">
+                            <div>
+                                <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="60" />
+                            </div>
+                            <div style="display: flex; flex-direction: column;">
+                                <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name | truncateFilename: 10 }}</span>
+                                <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.size / 1024 }} KB</span>
+
+                            </div>
+
+                        </div>
+                </ng-template>
+            </p-fileupload> 
+
+
+            <!--Изображение вида спереди-->
+            <p-fileupload   [customUpload]="true"  
+                            (uploadHandler)="customUploadHandlerImg($event, perspectivesImage.forward, typesImage.real)" 
+                            #ref_img_forward
+                            chooseLabel="Изображение вида спереди" 
+                            chooseIcon="pi pi-upload" 
+                            accept="image/*" 
+                            maxFileSize="10000000"
+                            uploadLabel="Загрузить"
+                            cancelLabel="Отмена"
+                            [disabled]="stateFileUpload.forward">
+                            
+                <ng-template #content let-files>
+                        <div *ngFor="let file of files; " class="p-8 rounded-border flex flex-col border border-surface items-center gap-4" style="display: flex; flex-direction: row; gap: 1rem;">
+                            <div>
+                                <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="60" />
+                            </div>
+                            <div style="display: flex; flex-direction: column;">
+                                <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name | truncateFilename: 10 }}</span>
+                                <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.size / 1024 }} KB</span>
+
+                            </div>
+
+                        </div>
+                </ng-template>
+            </p-fileupload> 
+
+
+            <!--Изображение вида сзади-->
+            <p-fileupload   [customUpload]="true"  
+                            (uploadHandler)="customUploadHandlerImg($event, perspectivesImage.back, typesImage.real)"  
+                            #ref_img_back
+                            chooseLabel="Изображение вида сзади" 
+                            chooseIcon="pi pi-upload" 
+                            accept="image/*" 
+                            maxFileSize="10000000"
+                            uploadLabel="Загрузить"
+                            cancelLabel="Отмена"
+                            [disabled]="stateFileUpload.back">
+                            
+                <ng-template #content let-files>
+                        <div *ngFor="let file of files; " class="p-8 rounded-border flex flex-col border border-surface items-center gap-4" style="display: flex; flex-direction: row; gap: 1rem;">
+                            <div>
+                                <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="60" />
+                            </div>
+                            <div style="display: flex; flex-direction: column;">
+                                <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name | truncateFilename: 10 }}</span>
+                                <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.size / 1024 }} KB</span>
+
+                            </div>
+
+                        </div>
+                </ng-template>
+            </p-fileupload> 
+
+
+        </div>
+ 
+    </div>
+</div>
